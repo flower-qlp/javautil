@@ -1,8 +1,11 @@
 package com.happy.javautil.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.happy.javautil.annotation.ApiByToken;
 import com.happy.javautil.entity.TestEntity;
+import com.happy.javautil.entity.ValidEntity;
 import com.happy.javautil.service.TestService;
+import com.happy.javautil.utils.PropertyUtil;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -17,6 +20,9 @@ public class TestController {
 
     @Autowired
     private TestService summaryService;
+
+    @Autowired
+    private PropertyUtil propertyUtil;
 
 
     @ApiByToken(value = "菜鸟", isCheck = true)
@@ -36,6 +42,15 @@ public class TestController {
         if (bindingResult.hasErrors()) {
             System.out.println(bindingResult.getFieldError().getDefaultMessage());
         }
+        System.out.println(JSON.toJSONString(propertyUtil.getContentExtract()));
         summaryService.test();
+    }
+
+    @ApiByToken(value = "无情铁手", isCheck = true)
+    @RequestMapping(value = "/validTest", method = RequestMethod.POST)
+    public void test(
+            @Validated @RequestBody ValidEntity validEntity
+    ) {
+        System.out.println("+++++++++++++++++++++++++++++++++++++++");
     }
 }

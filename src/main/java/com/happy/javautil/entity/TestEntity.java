@@ -2,6 +2,8 @@ package com.happy.javautil.entity;
 
 
 import com.happy.javautil.annotation.ApiByToken;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -9,6 +11,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Optional;
 
+@Data
+@AllArgsConstructor
 public class TestEntity {
 
     @NotBlank(message = "姓名不能为空！")
@@ -41,35 +45,4 @@ public class TestEntity {
         this.age = String.valueOf(Integer.valueOf(t.getAge()));
     }
 
-    public Integer getPhone() {
-        return phone;
-    }
-
-    public void setPhone(Integer phone) {
-        this.phone = phone;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAge() {
-        return age;
-    }
-
-    public void setAge(String age) {
-        this.age = age;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
 }
