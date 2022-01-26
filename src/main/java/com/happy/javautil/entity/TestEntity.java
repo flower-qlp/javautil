@@ -40,6 +40,11 @@ public class TestEntity {
     public TestEntity() {
     }
 
+    public TestEntity(String name, BigDecimal amount) {
+        this.name = name;
+        this.amount = amount;
+    }
+
     public TestEntity(TestEntity t) {
         this.name = t.getName();
         this.age = String.valueOf(Integer.valueOf(t.getAge()));

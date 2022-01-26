@@ -1,16 +1,23 @@
 package com.happy.javautil;
 
+import com.alibaba.fastjson.JSON;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Random;
+import java.util.Calendar;
+import java.util.Date;
 
 @SpringBootTest
 public class ThreadTest {
     public static void main(String[] args) {
-        for (int i = 0; i < 50; i++) {
-            Integer index = new Random().nextInt(50);
-            System.out.println("+" + index);
-        }
+
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DAY_OF_YEAR,-1);
+        System.out.println(JSON.toJSONString(calendar.getTime()));
+//        for (int i = 0; i < 50; i++) {
+//            Integer index = new Random().nextInt(50);
+//            System.out.println("+" + index);
+//        }
 
 //          String name="10120210000018";
 //          System.out.println(StringUtils.substring(name,7,13));
