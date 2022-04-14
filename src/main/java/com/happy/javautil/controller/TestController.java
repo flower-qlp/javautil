@@ -1,6 +1,5 @@
 package com.happy.javautil.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.happy.javautil.annotation.ApiByToken;
 import com.happy.javautil.entity.TestEntity;
 import com.happy.javautil.entity.ValidEntity;
@@ -44,10 +43,10 @@ public class TestController {
             @Validated @RequestBody TestEntity testEntity,
             BindingResult bindingResult
     ) {
-        if (bindingResult.hasErrors()) {
-            System.out.println(bindingResult.getFieldError().getDefaultMessage());
-        }
-        System.out.println(JSON.toJSONString(propertyUtil.getContentExtract()));
+//        if (bindingResult.hasErrors()) {
+//            System.out.println(bindingResult.getFieldError().getDefaultMessage());
+//        }
+//        System.out.println(JSON.toJSONString(propertyUtil.getContentExtract()));
         summaryService.test();
     }
 

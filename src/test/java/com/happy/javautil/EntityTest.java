@@ -1,32 +1,22 @@
 package com.happy.javautil;
 
-import com.alibaba.fastjson.JSON;
 import com.happy.javautil.entity.TestEntity;
-import com.happy.javautil.entity.vo.CertificateInVO;
-import com.happy.javautil.entity.vo.RespVo;
-import org.springframework.beans.BeanUtils;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.CancellationException;
-import java.util.stream.Collectors;
 
 @SpringBootTest
 public class EntityTest {
 
     public static void main(String[] args) {
 
-        TestEntity t1=new TestEntity();
+//        TestEntity t1 = new TestEntity();
+//        t1.setPhone(456);
+//        t1.setName("123456");
+//        System.out.println(JSON.parseObject(JSON.toJSONString(t1), TestEntityCopy.class));
 
-        System.out.println( t1 instanceof TestEntity);
-        System.out.println( !(t1 instanceof TestEntity));
-        System.out.println( (TestEntity.class.isInstance(t1) ));
-        System.out.println( !(TestEntity.class.isInstance(t1) ));
-
+//        System.out.println( t1 instanceof TestEntity);
+//        System.out.println( !(t1 instanceof TestEntity));
+//        System.out.println( (TestEntity.class.isInstance(t1) ));
+//        System.out.println( !(TestEntity.class.isInstance(t1) ));
 
 
 //        String _name="";
@@ -61,24 +51,24 @@ public class EntityTest {
 //        System.out.println(JSON.toJSONString(calendar.getTime()));
 //        Date nowDate=new Date();
 //        System.out.println(nowDate.compareTo(calendar.getTime()));
-        List<TestEntity> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            TestEntity entity = new TestEntity();
-            if (i % 2 == 1) {
-                entity.setName("測試人員" + i);
-            }
-            entity.setAmount(new BigDecimal(100));
-            list.add(entity);
-        }
-        TestEntity entity = new TestEntity();
-        entity.setName(null);
-        entity.setAmount(new BigDecimal(100));
-        list.remove(entity);
-        System.out.println(list.contains(entity));
-
-
-        setEntity(entity);
-        System.out.println(JSON.toJSONString(entity));
+//        List<TestEntity> list = new ArrayList<>();
+//        for (int i = 0; i < 10; i++) {
+//            TestEntity entity = new TestEntity();
+//            if (i % 2 == 1) {
+//                entity.setName("測試人員" + i);
+//            }
+//            entity.setAmount(new BigDecimal(100));
+//            list.add(entity);
+//        }
+//        TestEntity entity = new TestEntity();
+//        entity.setName(null);
+//        entity.setAmount(new BigDecimal(100));
+//        list.remove(entity);
+//        System.out.println(list.contains(entity));
+//
+//
+//        setEntity(entity);
+//        System.out.println(JSON.toJSONString(entity));
 
         // System.out.println(JSON.toJSONString(entity));
 //        List<TestEntity> entityList=new ArrayList<>();
@@ -90,9 +80,10 @@ public class EntityTest {
 //        }
 //        entityList=entityList.parallelStream().filter(x->x.getAge().contains("1")).collect(Collectors.toList());
 //        System.out.println(JSON.toJSONString(entityList));
+
     }
 
-    private static void setEntity(TestEntity entity) {
+    private static void setEntity(TestEntity entity,Object list) {
         entity.setName("ceshi");
         entity.setAge("123");
     }

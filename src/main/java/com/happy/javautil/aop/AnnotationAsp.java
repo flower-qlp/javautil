@@ -2,10 +2,10 @@ package com.happy.javautil.aop;
 
 import com.alibaba.fastjson.JSON;
 import com.happy.javautil.annotation.ApiByToken;
+import com.happy.javautil.annotation.Search;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -26,6 +26,32 @@ public class AnnotationAsp {
 
     @Pointcut(value = "@annotation(com.happy.javautil.annotation.ApiByToken)")
     public void loginPoint() {
+    }
+
+    @Pointcut(value = "@annotation(com.happy.javautil.annotation.Search)")
+    public void searchPoint() {
+    }
+
+    @Around("searchPoint()")
+    public Object handleSearchController(ProceedingJoinPoint proceedingJoinPoint) {
+        System.out.println("--------------进入切面---------------");
+        MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
+        Method method = methodSignature.getMethod();
+        Search search=method.getAnnotation(Search.class);
+
+        Object[] args = Arrays.stream(proceedingJoinPoint.getArgs())
+                .filter(x -> !(x instanceof HttpServletResponse)
+                        && !(x instanceof HttpServletRequest))
+                .toArray();
+        System.out.println("入参：" + JSON.toJSONString(args));
+
+        Object obj = null;
+        try {
+            obj = proceedingJoinPoint.proceed();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+        return obj;
     }
 
 
