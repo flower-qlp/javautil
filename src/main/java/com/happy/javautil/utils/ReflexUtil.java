@@ -4,6 +4,7 @@ package com.happy.javautil.utils;
 import com.alibaba.fastjson.JSON;
 import com.happy.javautil.annotation.Search;
 import com.happy.javautil.entity.TestEntity;
+import com.happy.javautil.entity.TestEntityCopy;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.BeanUtils;
@@ -134,7 +135,7 @@ public class ReflexUtil {
     }
 
 
-    public static <T> T param(Object fromObject, Class<T> tClass) {
+    public <T> T param(Object fromObject, Class<T> tClass) {
         T targetObject = null;
         try {
             final Field[] declaredFields = fromObject.getClass().getDeclaredFields();
@@ -173,43 +174,30 @@ public class ReflexUtil {
         return targetObject;
     }
 
-    private static void dealWithSearch(Search search, Object value, Object targetObject) {
+    public Map<String, Object> initHashMap(String key, Object value) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(key, value);
+        return map;
+    }
+
+    private void dealWithSearch(Search search, Object value, Object targetObject) {
         try {
             String columnNames = search.columnName();
             String compare = search.compare();
-            String preStr = search.preStr();
-            String afterStr = search.afterStr();
             String paramKey = search.paramKey();
             String getParamMethod = search.getParamMethod();
-            String tableName = search.tableName();
 
             if (StringUtils.isBlank(columnNames)) {
                 return;
             }
-            StringBuffer stringBuffer = new StringBuffer();
-            String[] columnNameArr = columnNames.split(",");
-            stringBuffer.append(" AND ( ");
-            for (int index = 0; index < columnNameArr.length; index++) {
-                if (StringUtils.isNotBlank(tableName)) {
-                    stringBuffer.append(tableName);
-                    stringBuffer.append(".");
-                }
-                stringBuffer.append(columnNameArr[index]);
-                stringBuffer.append(" ");
-                stringBuffer.append(compare);
-                stringBuffer.append(" '");
-                stringBuffer.append(preStr);
-                stringBuffer.append(value);
-                stringBuffer.append(afterStr);
-                stringBuffer.append("' ");
-                if (index == columnNameArr.length - 1) {
-                    stringBuffer.append(" ");
-                } else {
-                    stringBuffer.append(" or ");
-                }
+            String paramStr = "";
+            if (LIST_LIKE.equals(compare)) {
+                paramStr = commonListLike(search, value);
+            } else if (FOREACH.equals(compare)) {
+                paramStr = commonForeach(search, value);
+            } else {
+                paramStr = commonSplicing(search, value);
             }
-            stringBuffer.append(" )");
-            System.out.println("str=" + stringBuffer.toString());
 
             String setParamMethod = "s" + getParamMethod.substring(1);
 
@@ -218,10 +206,10 @@ public class ReflexUtil {
             Map<String, Object> map = JSON.parseObject(JSON.toJSONString(paramMap), Map.class);
             if (map.containsKey(paramKey)) {
                 Object alreadyValue = map.get(paramKey);
-                String valueStr = null == alreadyValue ? "" : alreadyValue + stringBuffer.toString();
+                String valueStr = null == alreadyValue ? "" : alreadyValue + paramStr;
                 map.put(paramKey, valueStr);
             } else {
-                map.put(paramKey, stringBuffer.toString());
+                map.put(paramKey, paramStr);
             }
 
             boolean canSet = true;
@@ -229,7 +217,7 @@ public class ReflexUtil {
             while (canSet) {
                 try {
                     if (setClass == Object.class) {
-                        canSet = false;
+                        return;
                     }
                     Method setMapMethod = targetObject.getClass().getMethod(setParamMethod, Map.class);
                     setMapMethod.invoke(targetObject, map);
@@ -243,6 +231,99 @@ public class ReflexUtil {
         }
     }
 
+    /***
+     * 数据库字段是单子段  入参是list
+     * **/
+    public String commonForeach(Search search, Object value) {
+        String preStr = search.preStr();
+        String afterStr = search.afterStr();
+        StringBuffer stringBuffer = new StringBuffer();
+        String columnName = search.columnName();
+        List<Object> values = JSON.parseArray(JSON.toJSONString(value));
+        if (values.size() == 0) {
+            return "";
+        }
+        stringBuffer.append("AND ");
+        stringBuffer.append(columnName);
+        stringBuffer.append(" in (");
+        for (int valueIndex = 0; valueIndex < values.size(); valueIndex++) {
+            stringBuffer.append(preStr);
+            stringBuffer.append(values.get(valueIndex));
+            stringBuffer.append(afterStr);
+            if (valueIndex == values.size() - 1) {
+                stringBuffer.append(" ");
+            } else {
+                stringBuffer.append(" , ");
+            }
+        }
+        stringBuffer.append(" )");
+        return stringBuffer.toString();
+    }
+
+    /***
+     * 数据库字段是，拼接  入参是list
+     * **/
+    public String commonListLike(Search search, Object value) {
+        StringBuffer stringBuffer = new StringBuffer();
+        String columnName = search.columnName();
+        List<Object> values = JSON.parseArray(JSON.toJSONString(value));
+        if (values.size() == 0) {
+            return "";
+        }
+        stringBuffer.append("AND (");
+        for (int valueIndex = 0; valueIndex < values.size(); valueIndex++) {
+            stringBuffer.append(columnName);
+            stringBuffer.append(" like '%");
+            stringBuffer.append(values.get(valueIndex));
+            stringBuffer.append("%' ");
+            if (valueIndex == values.size() - 1) {
+                stringBuffer.append(" ");
+            } else {
+                stringBuffer.append(" or ");
+            }
+        }
+        stringBuffer.append(" )");
+        return stringBuffer.toString();
+    }
+
+    /**
+     * 一般字段拼接
+     **/
+    public String commonSplicing(Search search, Object value) {
+        String columnNames = search.columnName();
+        String compare = search.compare();
+        String preStr = search.preStr();
+        String afterStr = search.afterStr();
+        String tableName = search.tableName();
+        StringBuffer stringBuffer = new StringBuffer();
+        String[] columnNameArr = columnNames.split(",");
+        stringBuffer.append(" AND ( ");
+        for (int index = 0; index < columnNameArr.length; index++) {
+            if (StringUtils.isNotBlank(tableName)) {
+                stringBuffer.append(tableName);
+                stringBuffer.append(".");
+            }
+            stringBuffer.append(columnNameArr[index]);
+            stringBuffer.append(" ");
+            stringBuffer.append(compare);
+            stringBuffer.append(" '");
+            stringBuffer.append(preStr);
+            stringBuffer.append(value);
+            stringBuffer.append(afterStr);
+            stringBuffer.append("' ");
+            if (index == columnNameArr.length - 1) {
+                stringBuffer.append(" ");
+            } else {
+                stringBuffer.append(" or ");
+            }
+        }
+        stringBuffer.append(" )");
+        return stringBuffer.toString();
+    }
+
+    public static final String LIST_LIKE = "listList";
+
+    public static final String FOREACH = "foreach";
 
     public static final List<String> INIT_CREATE = Arrays.asList("setCreateTime", "setCreateUser", "setUpdateUser", "setUpdateTime", "setTheState", "setBizState", "setApproveState");
 
@@ -298,11 +379,15 @@ public class ReflexUtil {
     public static void main(String[] args) throws Exception {
 
 
-//        TestEntityCopy copy = new TestEntityCopy();
-//        copy.setFzzt("小路");
-//        copy.setCodes(Arrays.asList("12","3131"));
-//        TestEntity extend1Entity = param(copy, TestEntity.class);
-//        System.out.println(JSON.toJSONString(extend1Entity));
+        TestEntityCopy copy = new TestEntityCopy();
+        copy.setFzzt("小路");
+        copy.setCodes(Arrays.asList("12", "3131"));
+        copy.setAges(Arrays.asList(1, 2, 3, 4, 5));
+        copy.setNickNames(null);
+        copy.setNames(Arrays.asList("name1", "name2"));
+        TestEntity extend1Entity = new ReflexUtil().param(copy, TestEntity.class);
+        System.out.println(JSON.toJSONString(extend1Entity));
+
 
 //        TestEntityCopy testEntityCopy = new TestEntityCopy();
 //        testEntityCopy.setFzzt("121212");
@@ -330,9 +415,9 @@ public class ReflexUtil {
         for (int i = 0; i < 20; i++) {
             TestEntity testEntity = new TestEntity();
             testEntity.setAge("P0" + i);
-            if(i==3){
+            if (i == 3) {
                 testEntity.setAge("P");
-            }else{
+            } else {
                 testEntity.setAge("P0" + i);
             }
             list.add(testEntity);

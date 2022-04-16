@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.happy.javautil.utils.ReflexUtil.FOREACH;
+import static com.happy.javautil.utils.ReflexUtil.LIST_LIKE;
+
 @Data
 @AllArgsConstructor
 public class TestEntityCopy extends BaseEntity {
@@ -37,9 +40,19 @@ public class TestEntityCopy extends BaseEntity {
 
     private Long htbh;
 
+    @Search(columnName = "columnCodes", compare = LIST_LIKE)
     private List<String> codes;
 
-    @Search(columnName = "column1,column2,column3,column4",compare = "like",preStr = "%",afterStr = "%",tableName = "table")
+    @Search(columnName = "columnAge", compare = FOREACH)
+    private List<Integer> ages;
+
+    @Search(columnName = "columnName", compare = FOREACH, preStr = "'", afterStr = "'")
+    private List<String> names;
+
+    @Search(columnName = "columnNickName", compare = FOREACH, preStr = "'", afterStr = "'")
+    private List<String> nickNames;
+
+    @Search(columnName = "column1,column2,column3,column4", compare = "like", preStr = "%", afterStr = "%", tableName = "table")
     private String fzzt;
 
 
