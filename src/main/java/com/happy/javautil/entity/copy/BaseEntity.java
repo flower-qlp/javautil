@@ -15,7 +15,8 @@ public class BaseEntity {
 
     public Map getParams() {
         if (null == params) {
-            return new HashMap();
+            System.out.println("-----");
+            params = new HashMap();
         }
         return params;
     }

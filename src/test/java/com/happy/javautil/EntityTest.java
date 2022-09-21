@@ -8,6 +8,7 @@ public class EntityTest {
 
     public static void main(String[] args) {
 
+
 //        TestEntity t1 = new TestEntity();
 //        t1.setPhone(456);
 //        t1.setName("123456");

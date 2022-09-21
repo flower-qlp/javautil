@@ -3,30 +3,121 @@ package com.happy.javautil;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class ImageTest {
 
     public static void main(String[] args) {
-        File file = new File("F:/image/image2.jpeg");
-        BufferedImage bufferedImage=null;
+        File file = new File("F:/image/pf.png");
+        File file2 = new File("F:/image/kb.png");
+        File file3 = new File("F:/image/bzs.png");
         try {
-             bufferedImage= ImageIO.read(file);
-        } catch (IOException e) {
+            InputStream inputStream = fileToInputStream(file);
+            InputStream inputStream2 = fileToInputStream(file2);
+            InputStream inputStream3 = fileToInputStream(file3);
+            BufferedImage bufferedImage = modifyImage(inputStream, inputStream2);
+            InputStream inputStream1 = bufferImagedToInputStream(bufferedImage);
+            BufferedImage bufferedImage1 = modifyImage(inputStream1, inputStream3);
+            writeImageLocal("F:/image/pt.png",bufferedImage1);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        BufferedImage des1 = Rotate(bufferedImage, 90);
+    }
 
+    public static InputStream fileToInputStream(File file) {
+        InputStream inputStream = null;
         try {
-            ImageIO.write(des1, "jpg", new File("F:/image/image22.jpeg"));
-        } catch (IOException e) {
+            inputStream = new FileInputStream(file);
+        } catch (Exception e) {
+        }
+        return inputStream;
+    }
+
+    public static BufferedImage streamToBufferedImage(InputStream inputStream) {
+        BufferedImage read = null;
+        try {
+            read = ImageIO.read(inputStream);
+        } catch (Exception e) {
             e.printStackTrace();
+        }
+        return read;
+    }
+
+    public static InputStream bufferImagedToInputStream(BufferedImage bufferedImage) {
+        InputStream inputStream = null;
+        try {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
+            byte[] bytes = byteArrayOutputStream.toByteArray();
+            inputStream = new ByteArrayInputStream(bytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return inputStream;
+    }
+
+    public static BufferedImage modifyImage(InputStream inpA, InputStream inpB) {
+        BufferedImage bufferedImage = null;
+        try {
+            BufferedImage imageA = ImageIO.read(inpA);
+            BufferedImage imageB = ImageIO.read(inpB);
+            int heightA = imageA.getHeight();
+            int widthA = imageA.getWidth();
+            int widthB = imageB.getWidth();
+            int heightB = imageB.getHeight();
+
+            bufferedImage = new BufferedImage(widthA + widthB, heightB, BufferedImage.TYPE_INT_BGR);
+            Graphics2D graphics = bufferedImage.createGraphics();
+            graphics.drawImage(imageA, 0, 0, widthA, heightA, null);
+            graphics.drawImage(imageB, widthA, 0, widthB, heightB, null);
+            graphics.dispose();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bufferedImage;
+    }
+
+    public static BufferedImage modifyImage(BufferedImage imageA, BufferedImage imageB) {
+        BufferedImage bufferedImage = null;
+        try {
+            int heightA = imageA.getHeight();
+            int widthA = imageA.getWidth();
+            int widthB = imageB.getWidth();
+            int heightB = imageB.getHeight();
+
+            bufferedImage = new BufferedImage(widthA + widthB, heightB, BufferedImage.TYPE_INT_BGR);
+            Graphics2D graphics = bufferedImage.createGraphics();
+            graphics.drawImage(imageA, 0, 0, widthA, heightA, null);
+            graphics.drawImage(imageB, widthA, 0, widthB, heightB, null);
+            graphics.dispose();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bufferedImage;
+    }
+
+    /**
+     * 生成新图片到本地
+     */
+    public static void writeImageLocal(String newImage, BufferedImage img) {
+        if (newImage != null && img != null) {
+            try {
+                File outputfile = new File(newImage);
+                ImageIO.write(img, "png", outputfile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     /**
      * 图像旋转
+     *
      * @param src
      * @param angel
      * @return
@@ -53,7 +144,7 @@ public class ImageTest {
     public static Rectangle CalcRotatedSize(Rectangle src, double angel) {
         // if angel is greater than 90 degree, we need to do some conversion
         if (angel >= 90) {
-            if(angel / 90 % 2 == 1){
+            if (angel / 90 % 2 == 1) {
                 int temp = src.height;
                 src.height = src.width;
                 src.width = temp;
@@ -69,16 +160,16 @@ public class ImageTest {
 
         int len_dalta_width = (int) (len * Math.cos(Math.PI - angel_alpha
                 - angel_dalta_width));
-        len_dalta_width=len_dalta_width>0?len_dalta_width:-len_dalta_width;
+        len_dalta_width = len_dalta_width > 0 ? len_dalta_width : -len_dalta_width;
 
         int len_dalta_height = (int) (len * Math.cos(Math.PI - angel_alpha
                 - angel_dalta_height));
-        len_dalta_height=len_dalta_height>0?len_dalta_height:-len_dalta_height;
+        len_dalta_height = len_dalta_height > 0 ? len_dalta_height : -len_dalta_height;
 
         int des_width = src.width + len_dalta_width * 2;
         int des_height = src.height + len_dalta_height * 2;
-        des_width=des_width>0?des_width:-des_width;
-        des_height=des_height>0?des_height:-des_height;
+        des_width = des_width > 0 ? des_width : -des_width;
+        des_height = des_height > 0 ? des_height : -des_height;
         return new java.awt.Rectangle(new Dimension(des_width, des_height));
     }
 }

@@ -2,6 +2,7 @@ package com.happy.javautil.entity;
 
 import com.happy.javautil.entity.vo.BaseVo;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ValidEntity extends BaseVo {
 
     private String productCode;

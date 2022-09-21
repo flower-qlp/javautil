@@ -1,8 +1,11 @@
 package com.happy.javautil.entity;
 
 
+import com.happy.javautil.annotation.CopyColumn;
 import com.happy.javautil.annotation.Search;
+import com.happy.javautil.annotation.StringFormat;
 import com.happy.javautil.entity.copy.BaseEntity;
+import com.happy.javautil.entity.copy.CopyEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -16,14 +19,16 @@ import java.util.Optional;
 
 @Data
 @AllArgsConstructor
-public class TestEntity extends BaseEntity {
+public class TestEntity extends BaseEntity implements Cloneable {
 
     @NotBlank(message = "姓名不能为空！")
+    @CopyColumn
     private String name;
     @NotBlank(message = "年龄！")
     private String age;
 
     @NotNull(message = "手机号不能为空")
+    @CopyColumn
     private Integer phone;
 
     private BigDecimal amount;
@@ -34,11 +39,14 @@ public class TestEntity extends BaseEntity {
 
     private Long htbh;
 
+    @StringFormat(length = 20,supplyChar = "0")
     private String theState;
 
     private Date createTime;
 
     private List<String> codes;
+
+    private CopyEntity copyEntity = new CopyEntity();
 
     @Search(columnName = "column_name1,column_name1", compare = "like", preStr = "%", afterStr = "%")
     private String fzzt;
@@ -77,4 +85,9 @@ public class TestEntity extends BaseEntity {
         this.age = String.valueOf(Integer.valueOf(t.getAge()));
     }
 
+    @Override
+    public TestEntity clone() throws CloneNotSupportedException {
+        TestEntity testEntity = (TestEntity) super.clone();
+        return testEntity;
+    }
 }

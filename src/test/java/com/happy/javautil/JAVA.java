@@ -1,50 +1,19 @@
 package com.happy.javautil;
 
 import com.alibaba.fastjson.JSON;
-import com.happy.javautil.entity.copy.Extend1Entity;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class JAVA {
     public static void main(String[] args) {
 
-//        CopyEntity copyEntity = new CopyEntity();
-//        copyEntity.setCopyId(11111L);
-//
-//        Extend1Entity entity = new Extend1Entity();
-//        entity.setExtend1Id(1L);
-//        entity.setExtendId(2L);
-//        entity.setBaseId(3L);
-
-//        BeanUtils.copyProperties(entity, copyEntity);
-//
-//        System.out.println(JSON.toJSONString(copyEntity));
-//
-//        String divide = new BigDecimal(36L).multiply(new BigDecimal(100)).divide(new BigDecimal(36), 2, RoundingMode.HALF_UP)+"%";
-//        System.out.println(""+new BigDecimal(100));
-//        System.out.println(""+new BigDecimal("100"));
-//        System.out.println(divide);
-//
-//        String number="10.232332";
-//        DecimalFormat decimalFormat=new DecimalFormat("######0");
-//        Number n=0;
-//        try {
-//            n=decimalFormat.parse(number);
-//            System.out.println(decimalFormat.format(n));
-//        } catch (ParseException e) {
-//
-//        }
-//
-//        Map<String,Object> map=new HashMap<>();
-//        map.put("code","111");
-//        System.out.println(""+JSON.toJSONString(map));
-
-        Extend1Entity entity = new Extend1Entity();
-        Extend1Entity extend1Entity= initBaseEntity(entity, Extend1Entity.class,INIT_CREATE);
-        System.out.println(JSON.toJSONString(extend1Entity));
-
+        Map<String,String> map1=new HashMap<>();
+        Map<String,String> map2=new HashMap<>();
+        System.out.println(map1.get(map2.get("1")));
     }
 
     public static final List<String> INIT_CREATE = Arrays.asList("setExtendName");

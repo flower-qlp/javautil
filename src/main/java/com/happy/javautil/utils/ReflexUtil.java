@@ -4,7 +4,6 @@ package com.happy.javautil.utils;
 import com.alibaba.fastjson.JSON;
 import com.happy.javautil.annotation.Search;
 import com.happy.javautil.entity.TestEntity;
-import com.happy.javautil.entity.TestEntityCopy;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.BeanUtils;
@@ -13,6 +12,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author happy
@@ -378,16 +378,32 @@ public class ReflexUtil {
 
     public static void main(String[] args) throws Exception {
 
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            list.add(i);
+        }
+        Long start1 = System.currentTimeMillis();
+        System.out.println("---start1----" + start1);
+        List<TestEntity> collect = list.parallelStream().map(x -> {
+            TestEntity entity = createEntity(null, TestEntity.class);
+            return entity;
+        }).collect(Collectors.toList());
+        Long end1 = System.currentTimeMillis();
+        System.out.println("---end1----" + end1);
+        System.out.println("---end1111----" + (end1-start1));
 
-        TestEntityCopy copy = new TestEntityCopy();
-        copy.setFzzt("小路");
-        copy.setCodes(Arrays.asList("12", "3131"));
-        copy.setAges(Arrays.asList(1, 2, 3, 4, 5));
-        copy.setNickNames(null);
-        copy.setNames(Arrays.asList("name1", "name2"));
-        TestEntity extend1Entity = new ReflexUtil().param(copy, TestEntity.class);
-        System.out.println(JSON.toJSONString(extend1Entity));
-
+        Long start2 = System.currentTimeMillis();
+        System.out.println("---start2----" + start2);
+        List<TestEntity> collect2 = list.parallelStream().map(x -> {
+            TestEntity entity = new TestEntity();
+            entity.setTheState("1");
+            entity.setFzzt("121212");
+            entity.setName("1212");
+            return entity;
+        }).collect(Collectors.toList());
+        Long end2 = System.currentTimeMillis();
+        System.out.println("---end2----" + end2);
+        System.out.println("---end2222----" + (end2-start2));
 
 //        TestEntityCopy testEntityCopy = new TestEntityCopy();
 //        testEntityCopy.setFzzt("121212");
@@ -411,17 +427,17 @@ public class ReflexUtil {
 //
 //        Map map = JSON.parseObject(JSON.toJSONString(testEntity), Map.class);
 
-        List<TestEntity> list = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            TestEntity testEntity = new TestEntity();
-            testEntity.setAge("P0" + i);
-            if (i == 3) {
-                testEntity.setAge("P");
-            } else {
-                testEntity.setAge("P0" + i);
-            }
-            list.add(testEntity);
-        }
+//        List<TestEntity> list = new ArrayList<>();
+//        for (int i = 0; i < 20; i++) {
+//            TestEntity testEntity = new TestEntity();
+//            testEntity.setAge("P0" + i);
+//            if (i == 3) {
+//                testEntity.setAge("P");
+//            } else {
+//                testEntity.setAge("P0" + i);
+//            }
+//            list.add(testEntity);
+//        }
 
     }
 }
