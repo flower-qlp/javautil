@@ -3,13 +3,18 @@ package com.happy.javautil;
 import com.happy.javautil.entity.TestEntity;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.text.ParseException;
+
 @SpringBootTest
 public class EntityTest {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException {
 
+        String name="2012-11-12 15:32:13>>32678769318764>>425432543523000012>>借>>30000000>>0>>30000000>>张三贷款>>6100114070600011>>01>>129839983918332131311>>1<<<2012-11-12 17:30:17>>32678769318765>>425432543523000013>>借>>10000000>>0>>10000000>>李四贷款>>6100114070600012>>02>>129839983918332131312>>1|";
+        String[] split = name.split("\\|");
+        System.out.println(name.contains(">>"));
 
-//        TestEntity t1 = new TestEntity();
+        //        TestEntity t1 = new TestEntity();
 //        t1.setPhone(456);
 //        t1.setName("123456");
 //        System.out.println(JSON.parseObject(JSON.toJSONString(t1), TestEntityCopy.class));
@@ -76,11 +81,48 @@ public class EntityTest {
 //        for(int i=0;i<20;i++){
 //            TestEntity entity=new TestEntity();
 //            entity.setAge(i+"");
-//            entity.setName("i="+i);
+//            if(i<3) {
+//                entity.setName("i=" + i);
+//            }
 //            entityList.add(entity);
 //        }
+//
 //        entityList=entityList.parallelStream().filter(x->x.getAge().contains("1")).collect(Collectors.toList());
-//        System.out.println(JSON.toJSONString(entityList));
+
+//        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+//        Date lastDate=simpleDateFormat.parse("2022-10-18");
+//        Date nowDate=simpleDateFormat.parse(simpleDateFormat.format(new Date()));
+//
+//        System.out.println(nowDate.compareTo(lastDate));
+
+        String name1="鲍中山";
+        char[] chars = name1.toCharArray();
+        StringBuilder middle = new StringBuilder();
+        for (int i = 0; i < chars.length; i++) {
+            if (i != 0 && i != (chars.length - 1)) {
+                middle.append("*");
+            }
+        }
+        String result11= chars[0] + middle.toString() + chars[chars.length - 1];
+        System.out.println(result11);
+
+        //        List<String> buyilType1=new ArrayList<>();
+//        buyilType1.add("2");
+//        buyilType1.add("3");
+//        buyilType1.add("4");
+//        buyilType1.add("5");
+//        buyilType1.add("46");
+//
+//        boolean b = buyilType1.stream().anyMatch(x -> x.equals("2"));
+//        Assert.isTrue(!b,"存在2");
+        //        List<String> buyilType2=new ArrayList<>();
+//        buyilType2.add("4");
+//        buyilType2.add("4");
+
+//        buyilType1.removeAll(buyilType2);
+
+//        System.out.println(JSON.toJSONString(buyilType1));
+
 
     }
 

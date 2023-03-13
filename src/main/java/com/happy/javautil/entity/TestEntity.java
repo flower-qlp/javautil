@@ -1,6 +1,7 @@
 package com.happy.javautil.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.happy.javautil.annotation.CopyColumn;
 import com.happy.javautil.annotation.Search;
 import com.happy.javautil.annotation.StringFormat;
@@ -42,7 +43,10 @@ public class TestEntity extends BaseEntity implements Cloneable {
     @StringFormat(length = 20,supplyChar = "0")
     private String theState;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date createTimeNoHour;
 
     private List<String> codes;
 
