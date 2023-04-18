@@ -10,6 +10,8 @@ public class BaseVo
 {
     @NotBlank(message = "主键不可以为空")
     private String id;
+    
+    private Long baseId;
 
     private Date createDate;
 }

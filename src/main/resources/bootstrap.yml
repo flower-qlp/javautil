@@ -1,0 +1,21 @@
+
+spring:
+  application:
+    name: testutil
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      username: nacos
+      password: nacos
+      discovery:
+        server-addr: 192.168.1.140:8848
+        namespace: bzscc
+      config:
+        server-addr: 192.168.1.140:8848
+        namespace: bzscc
+        file-extension: yml
+
+
+content:
+  extract: '{"name":""\u60DC\u547D"","age":"12","key":"","key11":"""","body":{"data":"2-12-12-1","value":""}}'

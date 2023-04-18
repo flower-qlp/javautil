@@ -1,10 +1,12 @@
 package com.happy.javautil;
 
-import com.alibaba.fastjson.JSON;
 import com.happy.javautil.entity.TestEntity;
 
 import java.text.ParseException;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Test {
 
@@ -21,30 +23,22 @@ public class Test {
 
     public static void main(String[] args) throws ParseException {
 
-        String testValue="12345678abcdef01";
-        String substring = testValue.substring(8, testValue.length() - 2);
-        System.out.println(substring);
-
-        TestEntity testEntity=new TestEntity();
-        testEntity.setCreateTime(new Date());
-        testEntity.setCreateTimeNoHour(testEntity.getCreateTime());
-        System.out.println(JSON.toJSONString(testEntity));
-
+        List<TestEntity> list=new ArrayList<>();
+        TestEntity entity=new TestEntity();
+        entity.setName(null);
+        list.add(entity);
+    
+        TestEntity entity1=new TestEntity();
+        entity1.setName("dddd");
+        list.add(entity1);
         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
+        String s = list.stream().map(TestEntity::getName)
+                .filter(Objects::nonNull).collect(Collectors.joining(","));
+    
+        System.out.println(s);
+        
+    
         //       String name="123456";
 //        String format = String.format("%-10s", name);
 //        System.out.println(format);
